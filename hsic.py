@@ -9,14 +9,14 @@ implement 1
 https://github.com/clovaai/rebias/blob/master/criterions/hsic.py
 
 """
+from utils import device
+from config import *
 import torch
 import torch.nn as nn
 
 import numpy as np
 
 from scipy.linalg import fractional_matrix_power
-
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def to_cpu(x:torch.Tensor):
     return x.detach().clone().cpu()
@@ -110,3 +110,5 @@ class HSIC(nn.Module):
     def forward(self, input1, input2, fix_D = True, **kwargs):
         ''' class entry point '''
         return self.estimator(input1, input2, fix_D)
+
+hsic = HSIC(BATCH_SIZE)
