@@ -98,6 +98,7 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
     hsic_loss = []
     norm_loss = []
     record_loss = []
+    image_set = []
     # train mode
     encoder.train()
     decoder.train()
@@ -136,6 +137,11 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
             LAMBDA *= LAMBDA_GAMMA
             LAMBDA = min(LAMBDA, LAMBDA_MAX)
 
+        if SAVE_GIF and i % SAVE_STEP == 0:
+            image_set.append(plot_result(U = update_U(points),title= str(i)))
+    if SAVE_GIF:
+        image_set[0].save(IMAGE_PATH  + 'result.gif',save_all=True, append_images=image_set[1:], optimize=False, duration=200, loop=0)
+
     # plot
     fig = plt.figure()
     fig.set_figwidth(16)
@@ -154,7 +160,7 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
     plt.savefig(IMAGE_PATH + 'training_loss')
     plt.close(fig)
 
-def plot_result(U = None):
+def plot_result(U = None, title = ''):
     global encoder, train_data
 
     fig = plt.figure()
@@ -167,7 +173,14 @@ def plot_result(U = None):
     plot2D(to_numpy(encoder(train_data.points)), train_data.labelColor, title='embedding', axes=223)
     plot2D(to_numpy(f_function(train_data.points)), train_data.labelColor, title='f_function', axes=224)
     plt.savefig(IMAGE_PATH + 'training_result')
+    fig.suptitle(title, fontsize=16)
+    
+    img = None
+    if SAVE_GIF:
+        img =  fig2img(fig)
+
     plt.close(fig)
+    return img
     
 def plot_distribution(axis = 0):
     global train_data

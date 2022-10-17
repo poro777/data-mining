@@ -22,6 +22,9 @@ LAMBDA_STEP = 10
 LAMBDA_MAX = 1
 LAMBDA_GAMMA = 1.2
 
+SAVE_GIF = True
+SAVE_STEP = 5
+
 # number of sample
 N = 2000
 BATCH_SIZE = 128
