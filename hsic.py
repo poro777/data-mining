@@ -13,16 +13,11 @@ from utils import device
 from config import *
 import torch
 import torch.nn as nn
-
+from utils import to_cpu
 import numpy as np
 
 from scipy.linalg import fractional_matrix_power
 
-def to_cpu(x:torch.Tensor):
-    return x.detach().clone().cpu()
-
-def to_numpy(x:torch.Tensor):
-    return x.detach().clone().cpu().numpy()
 
 def pairwise_distances(x):
     #x should be two dimensional

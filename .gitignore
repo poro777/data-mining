@@ -1,5 +1,9 @@
 *.zip
 *.pdf
+encoder_model
+output_image/
+log.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

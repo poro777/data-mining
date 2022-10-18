@@ -7,6 +7,12 @@ mcolors = ['r', 'b', 'g', 'c', 'm', 'y', 'k', 'w', 'aliceblue', 'antiquewhite', 
 def toColor(label):
     return [mcolors[l] for l in label]
 
+def to_cpu(x:torch.Tensor):
+    return x.detach().clone().cpu()
+
+def to_numpy(x:torch.Tensor):
+    return x.detach().clone().cpu().numpy()
+
 def plot2D(points,color = 'c',title='title', axes = None):
     if points.shape[1] != 2:
         print('need 2 dimension')

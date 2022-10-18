@@ -1,4 +1,4 @@
-IMAGE_PATH = './image/'
+IMAGE_PATH = './output_image/'
 MODEL_PATH = 'encoder_model'
 # init loop
 INIT_EPOCH = 30

@@ -25,7 +25,7 @@ class myDataSet(Dataset):
             )
             self.label_num = 3
         
-        self.points = torch.DoubleTensor(self.points, device=device)
+        self.points = torch.DoubleTensor(self.points).to(device)
         self.labelColor = toColor(self.true_labels)
         self._type = _type
         
@@ -50,7 +50,7 @@ class myDataSet(Dataset):
 
 # dataset
 train_data = myDataSet(N, 'blob')
-plot2D(train_data.points, train_data.labelColor,title='Points')
+plot2D(to_numpy(train_data.points), train_data.labelColor,title='Points')
 plt.savefig(IMAGE_PATH  +'original_points')
 plt.clf()
 dataSet = DataLoader(train_data, batch_size=BATCH_SIZE, drop_last=True)
