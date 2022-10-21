@@ -40,7 +40,7 @@ class myDataSet(Dataset):
     def sample(self, N):
         ''' random sample N '''
         index = np.random.choice(self.__len__(), N, replace=False)
-        return self.points[index]
+        return self.points[index], self.true_labels[index]
 
     def __len__(self):
         return len(self.points)
@@ -53,4 +53,4 @@ train_data = myDataSet(N, 'blob')
 plot2D(to_numpy(train_data.points), train_data.labelColor,title='Points')
 plt.savefig(IMAGE_PATH  +'original_points')
 plt.clf()
-dataSet = DataLoader(train_data, batch_size=BATCH_SIZE, drop_last=True)
+dataSet = DataLoader(train_data, batch_size=BATCH_SIZE,shuffle=True, drop_last=True)

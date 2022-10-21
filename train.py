@@ -65,6 +65,33 @@ def init_weight(INIT_EPOCH = 10, ENCODER_LR = 0.01, DECODER_LR = 0.005):
     plt.savefig(IMAGE_PATH + 'init_graph')
     plt.close(fig)
 
+def check_U_mode():
+    sample, sampleLabel = train_data.sample(BATCH_SIZE)
+    U = to_numpy(update_U(sample))
+    print('suggest y_dim = batch_size in check_U')
+    while True:
+        dim = [int(i) for i in input('dim: ').split(' ')]
+        color = toColor(sampleLabel)
+        if len(dim) == 1: # 1d
+            x = U[:,dim[0]]
+            y = sampleLabel
+            plt.scatter(x, y, c = color)
+
+        elif len(dim) == 2: # 2d
+            x = U[:,dim[0]]
+            y = U[:,dim[1]]
+            plt.scatter(x, y, c = color)
+
+        else: # 3d
+            fig = plt.figure()
+            ax = fig.add_subplot(projection='3d')
+            x = U[:, dim[0]]
+            y = U[:, dim[1]]
+            z = U[:, dim[2]]
+            ax.scatter( x, y, z, c = color)
+
+        plt.show()
+
 def update_U(points, debug = False):
     global hsic, y_dim
 

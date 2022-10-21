@@ -15,7 +15,6 @@ def to_numpy(x:torch.Tensor):
 
 def plot2D(points,color = 'c',title='title', axes = None):
     if points.shape[1] != 2:
-        print('need 2 dimension')
         return
     if axes is not None:
         plt.subplot(axes)
