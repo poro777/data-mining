@@ -7,14 +7,15 @@ class deepNetwork(nn.Module):
         super(deepNetwork, self).__init__()
         # 3 layer network
         self.fc = nn.Sequential(
-            nn.Linear(input_dim,32),
-            nn.ReLU(),
-            nn.Linear(32,32),
-            nn.ReLU(),
-            nn.Linear(32,32),
-            nn.ReLU(),
-            nn.Linear(32,output_dim),
-            
+            nn.Linear(input_dim,64),
+            nn.Sigmoid(),
+            nn.Linear(64,128),
+            nn.Sigmoid(),
+            nn.Linear(128,128),
+            nn.Sigmoid(),
+            nn.Linear(128,128),
+            nn.Sigmoid(),
+            nn.Linear(128,output_dim),
         )
         
     def forward(self, x):

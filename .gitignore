@@ -1,5 +1,6 @@
-*.zip
+
 *.pdf
+*.csv
 encoder_model
 output_image/
 log.txt
