@@ -9,11 +9,12 @@ implement 1
 https://github.com/clovaai/rebias/blob/master/criterions/hsic.py
 
 """
-from utils import device
-from config import *
+from py_code.utils import device
+from py_code.config import *
+from py_code.utils import to_cpu
+
 import torch
 import torch.nn as nn
-from utils import to_cpu
 import numpy as np
 
 from scipy.linalg import fractional_matrix_power

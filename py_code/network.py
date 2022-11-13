@@ -1,6 +1,6 @@
 import torch.nn as nn
-from config import *
-from utils import device
+from py_code.config import *
+from py_code.utils import device
 
 class deepNetwork(nn.Module):
     def __init__(self, input_dim, output_dim):

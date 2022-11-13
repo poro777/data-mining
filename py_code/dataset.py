@@ -4,8 +4,8 @@ from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 
 from sklearn import datasets as clustering
-from utils import *
-from config import *
+from py_code.utils import *
+from py_code.config import *
 
 class myDataSet(Dataset):
     def __init__(self,N, _type:str = 'moon'):

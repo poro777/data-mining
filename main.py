@@ -1,8 +1,4 @@
-from config import *
-from utils import *
-from train import *
-from network import *
-from dataset import *
+from py_code import *
 
 def main():
     # sample
@@ -46,7 +42,7 @@ def main():
 
     # write log
     with open('log.txt','w') as log:
-        with open('config.py','r') as f:
+        with open('py_code/config.py','r') as f:
             all = f.read()
             log.write(all)
         log.write('\n\n------------')

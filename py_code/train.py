@@ -9,10 +9,10 @@ import seaborn as sns
 
 from sklearn.cluster import KMeans
 
-from utils import *
-from hsic import *
-from network import *
-from dataset import *
+from py_code.utils import *
+from py_code.hsic import *
+from py_code.network import *
+from py_code.dataset import *
 
 def f_function(x):
     global encoder, decoder
