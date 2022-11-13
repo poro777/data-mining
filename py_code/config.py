@@ -1,5 +1,11 @@
 IMAGE_PATH = './output_image/'
 MODEL_PATH = 'encoder_model'
+
+DATASET = 'moon'
+
+NETWORK_SEED = 0
+DATASET_SEED = 42
+
 # init loop
 INIT_EPOCH = 30
 
@@ -20,11 +26,11 @@ SCHEDULER_GAMMA = 0.9
 LAMBDA = 0.001
 LAMBDA_STEP = 10
 LAMBDA_MAX = 1
-LAMBDA_GAMMA = 1.2
+LAMBDA_GAMMA = 1
 
 # center loss
-WITH_CENTER_LOSS = True
-CENTER = 0.0002 # weight
+WITH_CENTER_LOSS = True    
+CENTER = 2e-4 # weight
 K_CENTER = 2
 
 # number of sample

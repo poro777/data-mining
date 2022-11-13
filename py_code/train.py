@@ -113,13 +113,13 @@ def update_U(points, debug = False):
     return torch.DoubleTensor(U).to(device)
 
 def centerLoss(N_class, data):
-    kmeans = KMeans(n_clusters= N_class, random_state=0).fit(to_numpy(data))
+    kmeans = KMeans(n_clusters= N_class, n_init=3,random_state=0, max_iter=5).fit(to_numpy(data))
     cluster = torch.tensor(kmeans.labels_)
     cluster = F.one_hot(cluster.long()).double()
     #mean = x.T @ cluster / cluster.sum(dim=0)
     #x_cluster_mean = (mean @ cluster.T).T
     #x - x_cluster_mean
-    return norm(data - (data.T @ cluster / cluster.sum(dim=0) @ cluster.T).T)
+    return norm(data - ((((data.detach().T @ cluster) / cluster.sum(dim=0)) @ cluster.T).T))
 
 def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_STEP = 5, SCHEDULAR_GAMMA = 0.99,
          LAMBDA = 0.01, LAMBDA_STEP=100, LAMBDA_MAX=100, LAMBDA_GAMMA=1):

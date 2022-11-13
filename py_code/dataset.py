@@ -11,22 +11,22 @@ class myDataSet(Dataset):
     def __init__(self,N, _type:str = 'moon'):
         if _type == 'moon':
             self.points, self.true_labels = clustering.make_moons(
-                n_samples=N, noise=0.05, random_state=42
+                n_samples=N, noise=0.05, random_state=DATASET_SEED
             )
             self.label_num = 2
         elif _type == 'circle':
             self.points, self.true_labels = clustering.make_circles(
-                n_samples=N, factor=0.5, noise=0.05, random_state=42
+                n_samples=N, factor=0.5, noise=0.05, random_state=DATASET_SEED
             )
             self.label_num = 2
         elif _type == 'blob':
             self.points, self.true_labels = clustering.make_blobs(
-                n_samples=N, cluster_std=[1.0, 2.5, 0.5], random_state=42
+                n_samples=N, centers=3,cluster_std=[1.0, 2.5, 0.5], random_state=DATASET_SEED
             )
             self.label_num = 3
         elif _type == 'aniso':
             self.points, self.true_labels = clustering.make_blobs(
-                n_samples=N, cluster_std=[1.0, 2.5, 1], random_state=42
+                n_samples=N, cluster_std=[1.0, 2.5, 1], random_state=DATASET_SEED
             )
             transformation = [[0.6, -0.6], [-0.3, 0.6]]
             self.points = np.dot(self.points, transformation)
@@ -56,7 +56,7 @@ class myDataSet(Dataset):
         return self.points[idx]
 
 # dataset
-train_data = myDataSet(N, 'blob')
+train_data = myDataSet(N, DATASET)
 plot2D(to_numpy(train_data.points), train_data.labelColor,title='Points')
 plt.savefig(IMAGE_PATH  +'original_points')
 plt.clf()

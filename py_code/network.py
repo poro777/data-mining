@@ -1,4 +1,5 @@
 import torch.nn as nn
+import torch
 from py_code.config import *
 from py_code.utils import device
 
@@ -36,5 +37,6 @@ class kernelDncoder(nn.Module):
         return self.net(x)
 
 # global
+torch.manual_seed(NETWORK_SEED)
 encoder = kernelEncoder(N, x_dim, embedding_dim).double().to(device)
 decoder = kernelDncoder(N, embedding_dim, x_dim).double().to(device)
