@@ -1,5 +1,7 @@
 import numpy as np
 import torch
+from torch.nn import functional as F
+
 from tqdm import tqdm
 
 import matplotlib.pyplot as plt
@@ -110,6 +112,14 @@ def update_U(points, debug = False):
 
     return torch.DoubleTensor(U).to(device)
 
+def centerLoss(N_class, data):
+    kmeans = KMeans(n_clusters= N_class, random_state=0).fit(to_numpy(data))
+    cluster = torch.tensor(kmeans.labels_)
+    cluster = F.one_hot(cluster.long()).double()
+    #mean = x.T @ cluster / cluster.sum(dim=0)
+    #x_cluster_mean = (mean @ cluster.T).T
+    #x - x_cluster_mean
+    return norm(data - (data.T @ cluster / cluster.sum(dim=0) @ cluster.T).T)
 
 def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_STEP = 5, SCHEDULAR_GAMMA = 0.99,
          LAMBDA = 0.01, LAMBDA_STEP=100, LAMBDA_MAX=100, LAMBDA_GAMMA=1):
@@ -125,6 +135,7 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
     hsic_loss = []
     norm_loss = []
     record_loss = []
+    center_loss = []
     image_set = []
     # train mode
     encoder.train()
@@ -141,10 +152,12 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
                 encoderOptimizer.zero_grad()
                 decoderOptimizer.zero_grad()
 
-                _hsic = hsic(encoder(points), U)
+                x = encoder(points)
+                _hsic = hsic(x, U)
                 _norm = LAMBDA * norm(points - f_function(points))
 
-                loss = _hsic - _norm
+                centerloss_ = CENTER * centerLoss(K_CENTER, x) if WITH_CENTER_LOSS else torch.zeros(1)
+                loss = _hsic - _norm - centerloss_
                 # SGA
                 loss = -loss
                 loss.backward()
@@ -154,7 +167,7 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
 
         decoder_LR_Scheduler.step()
         encode_LR_Scheduler.step()
-
+        center_loss.append(centerloss_.item())
         hsic_loss.append(_hsic.item())
         norm_loss.append(_norm.item())
         record_loss.append(-(loss.item()))
@@ -174,16 +187,19 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
     fig.set_figwidth(16)
     fig.set_figheight(3)
     fig.tight_layout()
-    plt.subplot(131)
+    plt.subplot(141)
     plt.title("loss")
     plt.plot(record_loss)
-    plt.subplot(132)
+    plt.subplot(142)
     plt.ticklabel_format(useOffset=False)
     plt.title("hsic loss")
     plt.plot(hsic_loss)
-    plt.subplot(133)
+    plt.subplot(143)
     plt.title("norm loss")
     plt.plot(norm_loss)
+    plt.subplot(144)
+    plt.title("center loss")
+    plt.plot(center_loss)
     plt.savefig(IMAGE_PATH + 'training_loss')
     plt.close(fig)
 

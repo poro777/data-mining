@@ -24,7 +24,14 @@ class myDataSet(Dataset):
                 n_samples=N, cluster_std=[1.0, 2.5, 0.5], random_state=42
             )
             self.label_num = 3
-        
+        elif _type == 'aniso':
+            self.points, self.true_labels = clustering.make_blobs(
+                n_samples=N, cluster_std=[1.0, 2.5, 1], random_state=42
+            )
+            transformation = [[0.6, -0.6], [-0.3, 0.6]]
+            self.points = np.dot(self.points, transformation)
+            self.label_num = 3
+
         self.points = torch.DoubleTensor(self.points).to(device)
         self.labelColor = toColor(self.true_labels)
         self._type = _type

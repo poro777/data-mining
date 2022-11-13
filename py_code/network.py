@@ -8,13 +8,13 @@ class deepNetwork(nn.Module):
         # 3 layer network
         self.fc = nn.Sequential(
             nn.Linear(input_dim,64),
-            nn.Sigmoid(),
+            nn.LeakyReLU(),
             nn.Linear(64,128),
-            nn.Sigmoid(),
+            nn.LeakyReLU(),
             nn.Linear(128,128),
-            nn.Sigmoid(),
+            nn.LeakyReLU(),
             nn.Linear(128,128),
-            nn.Sigmoid(),
+            nn.LeakyReLU(),
             nn.Linear(128,output_dim),
         )
         
