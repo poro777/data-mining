@@ -1,9 +1,9 @@
 
 *.pdf
 *.csv
-encoder_model
+/encoder_model
 output_image/
-log.txt
+/log.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
