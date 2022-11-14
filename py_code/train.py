@@ -10,6 +10,7 @@ import numpy as np
 import seaborn as sns
 
 from sklearn.cluster import KMeans
+from sklearn.metrics.cluster import normalized_mutual_info_score
 
 from py_code.utils import *
 from py_code.hsic import *
@@ -238,35 +239,17 @@ def plot_distribution(axis = 0):
     plt.savefig(IMAGE_PATH + 'dist')
     plt.close(fig)
 
-def compare(a, b):
-    global train_data
-    if len(a) != len(b):
-        print('size not match')
-        return
-    label_num = train_data.label_num
-    a = np.eye(label_num)[a]
-    b = np.eye(label_num)[b]
-    aa = a.T @ a
-    bb = b.T @ a
-    acc = 0
-    for i,o in zip(range(label_num),np.argmax(bb,axis=1)):
-        acc += bb[i,o]/aa[i,i]
-    acc = (acc / label_num)
-    
-    print(acc)
-    if DEBUG:
-        print(aa)
-        print(bb)
-    return acc, bb
-
 def apply_kmeans(k, data, title='title'):
     global train_data
     kmeans = KMeans(n_clusters=k, random_state=0).fit(data)
     print(title,end=': ')
-    acc,_ = compare(train_data.true_labels,kmeans.labels_)
+    acc = normalized_mutual_info_score(train_data.true_labels,kmeans.labels_)
+    print(acc)
+
     plot2D(to_numpy(train_data.points),color=toColor(kmeans.labels_) , title=title)
     plt.savefig(IMAGE_PATH + f'k_means_{title}')
     plt.clf()
+    
     return acc
 
 def accuracy():
