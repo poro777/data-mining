@@ -116,7 +116,7 @@ def update_U(points, debug = False):
 def centerLoss(N_class, data):
     kmeans = KMeans(n_clusters= N_class, n_init=3,random_state=0, max_iter=5).fit(to_numpy(data))
     cluster = torch.tensor(kmeans.labels_)
-    cluster = F.one_hot(cluster.long()).double()
+    cluster = F.one_hot(cluster.long()).double().to(device)
     #mean = x.T @ cluster / cluster.sum(dim=0)
     #x_cluster_mean = (mean @ cluster.T).T
     #x - x_cluster_mean
@@ -157,7 +157,7 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
                 _hsic = hsic(x, U)
                 _norm = LAMBDA * norm(points - f_function(points))
 
-                centerloss_ = CENTER * centerLoss(K_CENTER, x) if WITH_CENTER_LOSS else torch.zeros(1)
+                centerloss_ = CENTER * centerLoss(K_CENTER, x) if WITH_CENTER_LOSS else torch.zeros(1,device=device)
                 loss = _hsic - _norm - centerloss_
                 # SGA
                 loss = -loss
