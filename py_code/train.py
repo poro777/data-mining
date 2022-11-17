@@ -97,7 +97,6 @@ def check_U_mode():
 
 def update_U(points, debug = False):
     global hsic, y_dim
-
     embedding_k = hsic._kernel_x(encoder(points))
     H = hsic.H
     D = np.diag(to_cpu(embedding_k).mean(1))
@@ -113,14 +112,18 @@ def update_U(points, debug = False):
 
     return torch.DoubleTensor(U).to(device)
 
-def centerLoss(N_class, data):
-    kmeans = KMeans(n_clusters= N_class, n_init=3,random_state=0, max_iter=5).fit(to_numpy(data))
-    cluster = torch.tensor(kmeans.labels_)
-    cluster = F.one_hot(cluster.long()).double().to(device)
+def centerLoss(data, center):
+
+    labels = []
+    for x in to_numpy(data):
+        labels.append(np.argmin(abs(center - x).sum(axis=1)))
+
+    cluster = torch.tensor(labels)
+    cluster = F.one_hot(cluster.long(),num_classes=len(center) ).double().to(device)
     #mean = x.T @ cluster / cluster.sum(dim=0)
     #x_cluster_mean = (mean @ cluster.T).T
     #x - x_cluster_mean
-    return norm(data - ((((data.detach().T @ cluster) / cluster.sum(dim=0)) @ cluster.T).T))
+    return norm(data - ((torch.nan_to_num((data.detach().T @ cluster) / cluster.sum(dim=0)) @ cluster.T).T))
 
 def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_STEP = 5, SCHEDULAR_GAMMA = 0.99,
          LAMBDA = 0.01, LAMBDA_STEP=100, LAMBDA_MAX=100, LAMBDA_GAMMA=1):
@@ -143,7 +146,8 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
     decoder.train()
     tqdm_ = tqdm(range(EPOCH))
     for i in tqdm_:
-        
+        kmeans = KMeans(n_clusters= K_CENTER, n_init=3,random_state=0, max_iter=30).fit(to_numpy(encoder(train_data.points)))
+        k_center = kmeans.cluster_centers_
         for points in dataSet:
             # update D, U
             hsic.update_D(hsic._kernel_x(points))
@@ -157,7 +161,7 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
                 _hsic = hsic(x, U)
                 _norm = LAMBDA * norm(points - f_function(points))
 
-                centerloss_ = CENTER * centerLoss(K_CENTER, x) if WITH_CENTER_LOSS else torch.zeros(1,device=device)
+                centerloss_ = CENTER * centerLoss(x, k_center) if WITH_CENTER_LOSS else torch.zeros(1,device=device)
                 loss = _hsic - _norm - centerloss_
                 # SGA
                 loss = -loss

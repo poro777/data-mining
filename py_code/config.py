@@ -30,12 +30,12 @@ LAMBDA_GAMMA = 1
 
 # center loss
 WITH_CENTER_LOSS = True    
-CENTER = 2e-4 # weight
+CENTER = 0.0002 # weight
 K_CENTER = 2
 
 # number of sample
 N = 1000
-BATCH_SIZE = 64
+BATCH_SIZE = 128
 x_dim = 2 # X
 y_dim = 2 # U
 embedding_dim = x_dim
