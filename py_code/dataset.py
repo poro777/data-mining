@@ -6,6 +6,9 @@ from torch.utils.data import DataLoader
 from sklearn import datasets as clustering
 from py_code.utils import *
 from py_code.config import *
+from py_code.spiral import *
+
+np.random.seed(DATASET_SEED)
 
 class myDataSet(Dataset):
     def __init__(self,N, _type:str = 'moon'):
@@ -30,6 +33,10 @@ class myDataSet(Dataset):
             )
             transformation = [[0.6, -0.6], [-0.3, 0.6]]
             self.points = np.dot(self.points, transformation)
+            self.label_num = 3
+        elif _type == 'spiral':
+            
+            self.points, self.true_labels = generate_spirals(N)
             self.label_num = 3
 
         self.points = torch.DoubleTensor(self.points).to(device)
