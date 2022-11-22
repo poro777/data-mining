@@ -227,6 +227,20 @@ def plot_result(U = None, title = ''):
         img =  fig2img(fig)
 
     plt.close(fig)
+
+    fig = plt.figure()
+    fig.set_figwidth(10)
+    fig.set_figheight(10)
+    plot2D(to_numpy(train_data.points), train_data.labelColor, title='Data X', axes=221)
+    global hsic
+    kx = hsic._kernel_x(train_data.points)
+    plotKernelMatrix(to_numpy(kx), train_data.labelColor, title='Kx', axes=222)
+    plot2D(to_numpy(encoder(train_data.points)), train_data.labelColor, title='Kψ(x,θ)', axes=223)
+    embedding_k = hsic._kernel_x(encoder(train_data.points))
+    plotKernelMatrix(to_numpy(embedding_k), train_data.labelColor, title='Kψ(x,θ)', axes=224)
+    plt.savefig(IMAGE_PATH + 'kernel_result')
+    plt.close(fig)
+
     return img
     
 def plot_distribution(axis = 0):

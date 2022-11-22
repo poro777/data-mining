@@ -32,3 +32,19 @@ def fig2img(fig):
     buf.seek(0)
     img = PIL.Image.open(buf)
     return img
+
+def plotKernelMatrix(p, color, title, axes = None):
+    matrix = []
+    for i in range(3):
+        for j in range(len(color)):
+            if color[j] == mcolors[i]:
+                matrix.append(p[j])
+    
+    if axes is not None:
+        plt.subplot(axes)
+    plt.imshow(matrix, cmap='Blues', interpolation='nearest')
+    plt.title(f'Kernel Matrix {title}\n of Learned Kernel')
+    plt.xlabel('sample id')
+    plt.ylabel('sample id')
+    plt.gca().invert_yaxis()
+    plt.colorbar()
