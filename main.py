@@ -22,8 +22,7 @@ def main():
         check_U_mode()
     
     # train model
-    train(EPOCH, ITER, ENCODER_LR, DECODER_LR, SCHEDULER_STEP, SCHEDULER_GAMMA,
-            LAMBDA, LAMBDA_STEP, LAMBDA_MAX, LAMBDA_GAMMA)
+    train(EPOCH, ITER, ENCODER_LR, DECODER_LR, SCHEDULER_STEP, SCHEDULER_GAMMA)
 
     # evel mode
     encoder.eval()

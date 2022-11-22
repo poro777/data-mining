@@ -22,15 +22,13 @@ DECODER_LR = 0.005
 SCHEDULER_STEP = 10
 SCHEDULER_GAMMA = 0.9
 
+from py_code.StepVariable import StepVariable
 # epoch every LAMBDA_STEP, lambda *= LAMBDA_GAMMA
-LAMBDA = 0.001
-LAMBDA_STEP = 10
-LAMBDA_MAX = 1
-LAMBDA_GAMMA = 1
+LAMBDA = StepVariable(0.0005, _gamma = 1.05 , _step = 5) # weight
 
 # center loss
-WITH_CENTER_LOSS = True    
-CENTER = 0.0002 # weight
+WITH_CENTER_LOSS = True
+CENTER = StepVariable(2e-6, _gamma = 3 , _step = 10) # weight
 K_CENTER = 2
 
 # number of sample

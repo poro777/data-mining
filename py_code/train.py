@@ -125,8 +125,7 @@ def centerLoss(data, center):
     #x - x_cluster_mean
     return norm(data - ((torch.nan_to_num((data.detach().T @ cluster) / cluster.sum(dim=0)) @ cluster.T).T))
 
-def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_STEP = 5, SCHEDULAR_GAMMA = 0.99,
-         LAMBDA = 0.01, LAMBDA_STEP=100, LAMBDA_MAX=100, LAMBDA_GAMMA=1):
+def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_STEP = 5, SCHEDULAR_GAMMA = 0.99):
     global encoder, decoder, dataSet, hsic
 
     encoderOptimizer = torch.optim.Adam(encoder.parameters(),lr=ENCODER_LR)
@@ -172,15 +171,15 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
 
         decoder_LR_Scheduler.step()
         encode_LR_Scheduler.step()
+
+        CENTER.step()
+        LAMBDA.step()
+
         center_loss.append(centerloss_.item())
         hsic_loss.append(_hsic.item())
         norm_loss.append(_norm.item())
         record_loss.append(-(loss.item()))
         tqdm_.set_postfix({'loss': -(loss.item())})
-
-        if i % LAMBDA_STEP == 0 and LAMBDA < LAMBDA_MAX:
-            LAMBDA *= LAMBDA_GAMMA
-            LAMBDA = min(LAMBDA, LAMBDA_MAX)
 
         if SAVE_GIF and i % SAVE_STEP == 0:
             image_set.append(plot_result(U = update_U(points),title= str(i)))
