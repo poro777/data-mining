@@ -23,7 +23,7 @@ def f_function(x):
 
 def test_network():
     global encoder, train_data
-    x = train_data.sample(3)
+    x, sampleLabel = train_data.sample(3)
     with torch.no_grad():
         print(x)
         print(encoder(x))
