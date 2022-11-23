@@ -113,7 +113,6 @@ def update_U(points, debug = False):
     return torch.DoubleTensor(U).to(device)
 
 def centerLoss(data, center):
-
     labels = []
     for x in to_numpy(data):
         labels.append(np.argmin(abs(center - x).sum(axis=1)))
@@ -208,41 +207,46 @@ def train(EPOCH = 20, ITER = 5, ENCODER_LR = 0.01, DECODER_LR = 0.05, SCHEDULER_
     plt.close(fig)
 
 def plot_result(U = None, title = ''):
-    global encoder, train_data
-
+    global encoder, train_data, hsic
+    
     fig = plt.figure()
-    fig.set_figwidth(10)
-    fig.set_figheight(8)
+    fig.set_figwidth(16)
+    fig.set_figheight(10)
     fig.tight_layout()
-    plot2D(to_numpy(train_data.points), train_data.labelColor, title='true_label', axes=221)
-    if U is not None:
-        plot2D(to_numpy(U), title='U(sample)', axes=222)
-    plot2D(to_numpy(encoder(train_data.points)), train_data.labelColor, title='embedding', axes=223)
-    plot2D(to_numpy(f_function(train_data.points)), train_data.labelColor, title='f_function', axes=224)
+
+    # sorted index
+    index = np.argsort(train_data.true_labels)
+
+    points = train_data.points[index]
+    colors = train_data.labelColor[index]
+    with torch.no_grad():
+        embedding_points = encoder(points)
+
+    # original points
+    plot2D(to_numpy(points), colors, title='true_label', axes=231)
+    # U
+    if U is not None: plot2D(to_numpy(U), title='U(sample)', axes=233)
+    # embedding points
+    plot2D(to_numpy(embedding_points), colors, title='embedding', axes=234)
+    # decode(encode(points))
+    plot2D(to_numpy(f_function(train_data.points)), train_data.labelColor, title='f_function', axes=236)
+    # original kernel
+    kx = hsic._kernel_x(points)
+    plotKernelMatrix(to_numpy(kx), colors, title='Kx', axes=232)
+    # embedding kernel
+    embedding_k = hsic._kernel_x(embedding_points)
+    plotKernelMatrix(to_numpy(embedding_k), colors, title='Kψ(x,θ)', axes=235)
+
     plt.savefig(IMAGE_PATH + 'training_result')
     fig.suptitle(title, fontsize=16)
-    
     img = None
-    if SAVE_GIF:
-        img =  fig2img(fig)
+    if SAVE_GIF:    
+        img = fig2img(fig)
 
-    plt.close(fig)
-
-    fig = plt.figure()
-    fig.set_figwidth(10)
-    fig.set_figheight(10)
-    plot2D(to_numpy(train_data.points), train_data.labelColor, title='Data X', axes=221)
-    global hsic
-    kx = hsic._kernel_x(train_data.points)
-    plotKernelMatrix(to_numpy(kx), train_data.labelColor, title='Kx', axes=222)
-    plot2D(to_numpy(encoder(train_data.points)), train_data.labelColor, title='Kψ(x,θ)', axes=223)
-    embedding_k = hsic._kernel_x(encoder(train_data.points))
-    plotKernelMatrix(to_numpy(embedding_k), train_data.labelColor, title='Kψ(x,θ)', axes=224)
-    plt.savefig(IMAGE_PATH + 'kernel_result')
     plt.close(fig)
 
     return img
-    
+
 def plot_distribution(axis = 0):
     global train_data
     

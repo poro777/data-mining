@@ -8,7 +8,6 @@ from py_code.utils import *
 from py_code.config import *
 from py_code.spiral import *
 
-np.random.seed(DATASET_SEED)
 
 class myDataSet(Dataset):
     def __init__(self,N, _type:str = 'moon'):
@@ -35,12 +34,12 @@ class myDataSet(Dataset):
             self.points = np.dot(self.points, transformation)
             self.label_num = 3
         elif _type == 'spiral':
-            
+            np.random.seed(DATASET_SEED)
             self.points, self.true_labels = generate_spirals(N)
             self.label_num = 3
 
         self.points = torch.DoubleTensor(self.points).to(device)
-        self.labelColor = toColor(self.true_labels)
+        self.labelColor = np.array(toColor(self.true_labels))
         self._type = _type
         
     def groupIndex(self,label):
