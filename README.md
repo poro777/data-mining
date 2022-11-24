@@ -3,8 +3,9 @@
 [Paper](https://epubs.siam.org/doi/10.1137/1.9781611976236.72)
 
 # Requirements 
-- Pytorch
-- Numpy
+Python
+- pytorch
+- numpy
 - tqdm
 - seaborn
 - sklearn
@@ -17,8 +18,17 @@
 python main.py
 ```
 
-## Hyperparamter
-`py_code/congif.py`
+## Hyperparameter
+`py_code/config.py`
+
+### Dataset
+| Dataset type | Source |
+| --- | --- |
+| `moon` | sklearn.datasets |
+| `circle` | sklearn.datasets |
+| `blob` | sklearn.datasets |
+| `aniso` | sklearn.datasets |
+| `spiral` | py_code/spiral.py ([from](http://cs231n.github.io/neural-networks-case-study/))
 
 ## Output 
 ### file
